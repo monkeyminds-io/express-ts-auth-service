@@ -1,9 +1,7 @@
 import type { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { randomUUID } from 'crypto';
 import * as argon2 from 'argon2';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
-import prismaClient from '../config/prisma';
 import type {
   TypedRequest,
   UserLoginCredentials,
@@ -13,12 +11,12 @@ import {
   createAccessToken,
   createRefreshToken
 } from '../utils/generateTokens.util';
-import config from '../config/config';
-
 import {
   clearRefreshTokenCookieConfig,
+  config,
+  prismaClient,
   refreshTokenCookieConfig
-} from '../config/cookieConfig';
+} from '../config';
 
 import { sendVerifyEmail } from '../utils/sendEmail.util';
 import logger from '../middleware/logger';
@@ -71,7 +69,8 @@ export const handleSignUp = async (
       }
     });
 
-    const token = randomUUID();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const token = (<any>crypto).randomUUID();
     const expiresAt = new Date(Date.now() + 3600000); // Token expires in 1 hour
 
     await prismaClient.emailVerificationToken.create({

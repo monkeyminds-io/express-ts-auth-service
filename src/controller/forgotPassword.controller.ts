@@ -1,8 +1,7 @@
 import type { Response } from 'express';
 import httpStatus from 'http-status';
-import { randomUUID } from 'crypto';
 import * as argon2 from 'argon2';
-import prismaClient from '../config/prisma';
+import { prismaClient } from '../config';
 import type {
   EmailRequestBody,
   ResetPasswordRequestBodyType,
@@ -40,7 +39,8 @@ export const handleForgotPassword = async (
   }
 
   // Generate a reset token and save it to the database
-  const resetToken = randomUUID();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resetToken = (<any>crypto).randomUUID();
   const expiresAt = new Date(Date.now() + 3600000); // Token expires in 1 hour
   await prismaClient.resetToken.create({
     data: {

@@ -39,14 +39,14 @@ app.use(
 );
 
 if (config.node_env === 'production') {
-  app.use('/api/v1/auth', authLimiter);
+  app.use(`${config.server.api_path}/auth`, authLimiter);
 }
 
-app.use('/api/v1/auth', authRouter);
+app.use(`${config.server.api_path}/auth`, authRouter);
 
-app.use('/api/v1', passwordRouter);
+app.use(config.server.api_path, passwordRouter);
 
-app.use('/api/v1', verifyEmailRouter);
+app.use(config.server.api_path, verifyEmailRouter);
 
 app.get('/secret', isAuth, (_req, res) => {
   res.json({

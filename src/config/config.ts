@@ -7,17 +7,23 @@ dotenv.config({
 });
 
 const envSchema = Joi.object().keys({
-  NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
+  NODE_ENV: Joi.string()
+    .valid('production', 'development', 'test')
+    .required()
+    .default('development'),
   PORT: Joi.string().required().default('4000'),
-  SERVER_URL: Joi.string().required(),
+  SERVER_URL: Joi.string().required().default('http://localhost:4000'),
+  API_PATH: Joi.string().required().default('/api/v1'),
   CORS_ORIGIN: Joi.string().required().default('*'),
   ACCESS_TOKEN_SECRET: Joi.string().min(8).required(),
   ACCESS_TOKEN_EXPIRE: Joi.string().required().default('20m'),
   REFRESH_TOKEN_SECRET: Joi.string().min(8).required(),
   REFRESH_TOKEN_EXPIRE: Joi.string().required().default('1d'),
   REFRESH_TOKEN_COOKIE_NAME: Joi.string().required().default('jid'),
-  MYSQL_DATABASE: Joi.string().required(),
-  MYSQL_ROOT_PASSWORD: Joi.string().required(),
+  // TODO Set PostgreSQL DB connection params here and in .env file
+  PG_DATABASE: Joi.string().required(),
+  PG_USER: Joi.string().required(),
+  PG_PASSWORD: Joi.string().required(),
   DATABASE_URL: Joi.string().required(),
   SMTP_HOST: Joi.string().required(),
   SMTP_PORT: Joi.string().default('587'),
@@ -42,7 +48,8 @@ const config = {
   node_env: validatedEnv.NODE_ENV,
   server: {
     port: validatedEnv.PORT,
-    url: validatedEnv.SERVER_URL
+    url: validatedEnv.SERVER_URL,
+    api_path: validatedEnv.API_PATH
   },
   cors: {
     cors_origin: validatedEnv.CORS_ORIGIN
